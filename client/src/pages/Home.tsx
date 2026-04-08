@@ -6,7 +6,7 @@
    ============================================================= */
 
 import { useEffect, useRef, useState } from "react";
-import { MapPin, Mail, Linkedin, ChevronDown, Star, Download } from "lucide-react";
+import { MapPin, Mail, Linkedin, ChevronDown, Star, Download, Phone } from "lucide-react";
 
 // ── CV CDN URL ───────────────────────────────────────────────────────────────
 const CV_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310519663164379997/gb3kDvRHMNESvyNJMSRSjR/RAULFAVINSANTOSCV_a95fdfa1.docx";
@@ -172,7 +172,7 @@ export default function Home() {
             ))}
           </div>
           <a
-            href="https://www.linkedin.com/in/"
+            href="https://www.linkedin.com/in/raul-favin"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 px-4 py-2 text-xs tracking-widest uppercase transition-all duration-200 hover:opacity-80"
@@ -714,7 +714,7 @@ export default function Home() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
-                href="https://www.linkedin.com/in/"
+                href="https://www.linkedin.com/in/raul-favin"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-3 px-8 py-4 text-sm tracking-widest uppercase font-semibold transition-all duration-200 hover:opacity-85"
@@ -729,7 +729,7 @@ export default function Home() {
                 Connect on LinkedIn
               </a>
               <a
-                href="mailto:raul@example.com"
+                href="mailto:raulfavin@gmail.com"
                 className="flex items-center justify-center gap-3 px-8 py-4 text-sm tracking-widest uppercase font-semibold transition-all duration-200 hover:opacity-85"
                 style={{
                   fontFamily: "'Cormorant Garamond', serif",
@@ -741,6 +741,20 @@ export default function Home() {
               >
                 <Mail size={16} />
                 Get in Touch
+              </a>
+              <a
+                href="tel:+353834307793"
+                className="flex items-center justify-center gap-3 px-8 py-4 text-sm tracking-widest uppercase font-semibold transition-all duration-200 hover:opacity-85"
+                style={{
+                  fontFamily: "'Cormorant Garamond', serif",
+                  border: "1px solid rgba(201,146,42,0.5)",
+                  color: "#e8d5a3",
+                  background: "transparent",
+                  letterSpacing: "0.15em",
+                }}
+              >
+                <Phone size={16} />
+                +353 83 430 7793
               </a>
               <a
                 href={CV_URL}
