@@ -6,7 +6,7 @@
    ============================================================= */
 
 import { useEffect, useRef, useState } from "react";
-import { MapPin, Mail, Linkedin, ChevronDown, Star, Download, Phone } from "lucide-react";
+import { MapPin, Mail, Linkedin, ChevronDown, Star, Download, Phone, ChevronUp, X } from "lucide-react";
 
 // ── CV CDN URL ───────────────────────────────────────────────────────────────
 const CV_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310519663164379997/gb3kDvRHMNESvyNJMSRSjR/RAULFAVINSANTOSCV_a95fdfa1.docx";
@@ -62,21 +62,46 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
   );
 }
 
-// ── Cocktail menu card ───────────────────────────────────────────────────────
-function MenuCard({ title, img, delay = 0 }: { title: string; img: string; delay?: number }) {
+// ── Expandable cocktail menu card ───────────────────────────────────────────
+function ExpandableMenuCard({
+  title,
+  menuImg,
+  cocktailImg,
+  cocktailLabel,
+  delay = 0,
+}: {
+  title: string;
+  menuImg: string;
+  cocktailImg: string;
+  cocktailLabel: string;
+  delay?: number;
+}) {
   const ref = useScrollReveal();
+  const [open, setOpen] = useState(false);
   return (
     <div
       ref={ref}
-      className="fade-in-up glass-card overflow-hidden group cursor-pointer"
+      className="fade-in-up glass-card overflow-hidden group"
       style={{ transitionDelay: `${delay}ms` }}
     >
-      <div className="overflow-hidden aspect-[3/4]">
+      {/* Menu photo — always visible */}
+      <div className="overflow-hidden aspect-[3/4] cursor-pointer relative" onClick={() => setOpen(true)}>
         <img
-          src={img}
+          src={menuImg}
           alt={title}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
+        <div
+          className="absolute inset-0 flex items-end justify-center pb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          style={{ background: "linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 60%)" }}
+        >
+          <span
+            className="flex items-center gap-1 text-xs tracking-widest uppercase px-3 py-1"
+            style={{ color: "#c9922a", fontFamily: "'Cormorant Garamond', serif" }}
+          >
+            <ChevronDown size={14} /> View Cocktail
+          </span>
+        </div>
       </div>
       <div className="p-4">
         <p
@@ -86,6 +111,45 @@ function MenuCard({ title, img, delay = 0 }: { title: string; img: string; delay
           {title}
         </p>
       </div>
+
+      {/* Lightbox overlay */}
+      {open && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ background: "rgba(10,8,6,0.92)" }}
+          onClick={() => setOpen(false)}
+        >
+          <div
+            className="relative max-w-lg w-full"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setOpen(false)}
+              className="absolute -top-10 right-0 flex items-center gap-1 text-xs tracking-widest uppercase transition-opacity hover:opacity-70"
+              style={{ color: "#c9922a", fontFamily: "'Cormorant Garamond', serif" }}
+            >
+              <X size={14} /> Close
+            </button>
+            <div
+              className="overflow-hidden"
+              style={{ boxShadow: "0 30px 80px rgba(0,0,0,0.8)" }}
+            >
+              <img
+                src={cocktailImg}
+                alt={cocktailLabel}
+                className="w-full object-cover"
+                style={{ maxHeight: "80vh" }}
+              />
+            </div>
+            <p
+              className="mt-4 text-center text-sm tracking-widest uppercase"
+              style={{ fontFamily: "'Cormorant Garamond', serif", color: "#c9922a" }}
+            >
+              {cocktailLabel}
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -592,6 +656,10 @@ export default function Home() {
                     season="Halloween"
                     description="Dark, theatrical, and dramatic — smoky presentations, deep crimson colours, and unexpected flavour twists to match the season's spirit."
                   />
+                  <SeasonalItem
+                    season="Valentine's Day"
+                    description="Romantic, indulgent, and visually striking — rose-infused spirits, deep berry tones, and delicate garnishes crafted to set the mood for a perfect evening."
+                  />
                 </div>
               </div>
 
@@ -652,14 +720,62 @@ export default function Home() {
               </p>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              <MenuCard title="Cocktails Menu" img={PHOTOS.cocktailMenu} delay={0} />
-              <MenuCard title="Negronis" img={PHOTOS.negroniMenu} delay={80} />
-              <MenuCard title="After Dinner" img={PHOTOS.afterDinnerMenu} delay={160} />
-              <MenuCard title="Irish Forward" img={PHOTOS.irishForwardMenu} delay={240} />
-              <MenuCard title="Martinis" img={PHOTOS.martinisMenu} delay={0} />
-              <MenuCard title="Sours" img={PHOTOS.soursMenu} delay={80} />
-              <MenuCard title="Long Drinks" img={PHOTOS.longMenu} delay={160} />
-              <MenuCard title="Smoked" img={PHOTOS.smokedMenu} delay={240} />
+              <ExpandableMenuCard
+                title="Cocktails Menu"
+                menuImg={PHOTOS.cocktailMenu}
+                cocktailImg={PHOTOS.raspberryShoda}
+                cocktailLabel="Raspberry Shoda — Signature Cocktail"
+                delay={0}
+              />
+              <ExpandableMenuCard
+                title="Negronis"
+                menuImg={PHOTOS.negroniMenu}
+                cocktailImg={PHOTOS.raulAtWork}
+                cocktailLabel="Negroni Selection — Arkle Bar"
+                delay={80}
+              />
+              <ExpandableMenuCard
+                title="After Dinner"
+                menuImg={PHOTOS.afterDinnerMenu}
+                cocktailImg={PHOTOS.raspberryShodaRow}
+                cocktailLabel="After Dinner Cocktails — Arkle Bar"
+                delay={160}
+              />
+              <ExpandableMenuCard
+                title="Irish Forward"
+                menuImg={PHOTOS.irishForwardMenu}
+                cocktailImg={PHOTOS.raulAtWork}
+                cocktailLabel="Irish Forward — Celebrating Irish Spirits"
+                delay={240}
+              />
+              <ExpandableMenuCard
+                title="Martinis"
+                menuImg={PHOTOS.martinisMenu}
+                cocktailImg={PHOTOS.raspberryShoda}
+                cocktailLabel="Martini Selection — Arkle Bar"
+                delay={0}
+              />
+              <ExpandableMenuCard
+                title="Sours"
+                menuImg={PHOTOS.soursMenu}
+                cocktailImg={PHOTOS.raspberryShodaRow}
+                cocktailLabel="Sours — Whiskey, Pisco & Amaretto"
+                delay={80}
+              />
+              <ExpandableMenuCard
+                title="Long Drinks"
+                menuImg={PHOTOS.longMenu}
+                cocktailImg={PHOTOS.blackForestSpecial}
+                cocktailLabel="Long Drinks — Miso Colada, Highball 75 & more"
+                delay={160}
+              />
+              <ExpandableMenuCard
+                title="Smoked"
+                menuImg={PHOTOS.smokedMenu}
+                cocktailImg={PHOTOS.raulAtWork}
+                cocktailLabel="Smoked Cocktails — Old Fashioned, Mezcal Negroni & more"
+                delay={240}
+              />
             </div>
           </div>
         </div>
