@@ -55,7 +55,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
     <p
       className="text-xs tracking-[0.3em] uppercase mb-4"
-      style={{ fontFamily: "'Cormorant Garamond', serif", color: "#c9922a" }}
+      style={{ fontFamily: "'Cormorant Garamond', serif", color: "#c9922a", fontSize: '14px', letterSpacing: '0.3em' }}
     >
       {children}
     </p>
@@ -222,7 +222,7 @@ export default function Home() {
               className="text-6xl md:text-8xl leading-none mb-6"
               style={{ fontFamily: "'Playfair Display', serif", color: "#f5efe6" }}
             >
-              Raul
+              Raul Favin
               <br />
               <em className="text-5xl md:text-7xl" style={{ color: "#c9922a" }}>
                 Mixologist
@@ -232,10 +232,10 @@ export default function Home() {
               className="text-base md:text-lg leading-relaxed mb-8 max-w-lg"
               style={{ color: "oklch(0.70 0.015 65)", fontFamily: "'DM Sans', sans-serif" }}
             >
-              Over two years crafting award-worthy cocktails at the Arkle Bar &amp; Restaurant,
+              Over five years of bar experience, including two years crafting award-worthy cocktails at the Arkle Bar &amp; Restaurant,
               Glenroyal Hotel. Creator of the{" "}
               <span style={{ color: "#e8d5a3", fontStyle: "italic" }}>Raspberry Shoda</span> —
-              the hotel's top-selling cocktail. Now bringing that craft to{" "}
+              for a while the hotel's top-selling cocktail. Now bringing that craft to{" "}
               <span style={{ color: "#c9922a" }}>Málaga, Spain</span>.
             </p>
             <div className="flex flex-wrap gap-4 items-center">
@@ -368,7 +368,7 @@ export default function Home() {
                 className="text-base leading-relaxed mb-5"
                 style={{ color: "oklch(0.68 0.015 65)", fontFamily: "'DM Sans', sans-serif" }}
               >
-                For over two years I served as Head Mixologist at the prestigious Arkle Bar &amp;
+                With over five years of bar and hotel experience, two of which I served as Head Mixologist at the prestigious Arkle Bar &amp;
                 Restaurant within the Glenroyal Hotel in Maynooth, Ireland — one of the country's
                 finest 4-star hotel properties. In that role I was responsible for the full cocktail
                 programme: from menu conception and ingredient sourcing to team training and
@@ -391,8 +391,8 @@ export default function Home() {
                 }}
               >
                 {[
-                  { number: "2+", label: "Years at Glenroyal" },
-                  { number: "#1", label: "Best-Selling Cocktail" },
+                  { number: "5+", label: "Years Hotel Experience" },
+                  { number: "#1", label: "Best-Selling Cocktail at Glenroyal Hotel" },
                   { number: "4★", label: "Hotel Standard" },
                 ].map(({ number, label }) => (
                   <div key={label} className="text-center">
@@ -461,7 +461,7 @@ export default function Home() {
                     src={PHOTOS.raspberryShoda}
                     alt="Raspberry Shoda — single glass"
                     className="w-full object-cover"
-                    style={{ height: "380px", objectPosition: "center top" }}
+                    style={{ height: '500px', objectPosition: "center top" }}
                   />
                 </div>
                 <div
@@ -483,7 +483,7 @@ export default function Home() {
                     src={PHOTOS.cocktailMenu}
                     alt="Arkle cocktail menu featuring Raspberry Shoda"
                     className="w-full object-cover"
-                    style={{ height: "200px", objectPosition: "center top" }}
+                    style={{ height: '380px', objectPosition: "center top" }}
                   />
                 </div>
               </div>
