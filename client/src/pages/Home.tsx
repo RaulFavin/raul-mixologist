@@ -63,6 +63,9 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 }
 
 // ── Expandable cocktail menu card ───────────────────────────────────────────
+// Each card renders a compact thumbnail. When clicked it signals its index to
+// the parent via onOpen(). The parent renders the full expanded panel below the
+// row that contains the active card, spanning the full grid width.
 function ExpandableMenuCard({
   title,
   menuImg,
@@ -71,6 +74,9 @@ function ExpandableMenuCard({
   description,
   story,
   ingredients,
+  isOpen,
+  onOpen,
+  onClose,
   delay = 0,
 }: {
   title: string;
@@ -80,18 +86,27 @@ function ExpandableMenuCard({
   description: string;
   story: string;
   ingredients: string[];
+  isOpen: boolean;
+  onOpen: () => void;
+  onClose: () => void;
   delay?: number;
 }) {
   const ref = useScrollReveal();
-  const [open, setOpen] = useState(false);
   return (
     <div
       ref={ref}
       className="fade-in-up glass-card overflow-hidden group"
-      style={{ transitionDelay: `${delay}ms` }}
+      style={{
+        transitionDelay: `${delay}ms`,
+        outline: isOpen ? "2px solid rgba(201,146,42,0.7)" : "none",
+        outlineOffset: "2px",
+      }}
     >
-      {/* Menu photo — always visible */}
-      <div className="overflow-hidden aspect-[3/4] cursor-pointer relative" onClick={() => setOpen(true)}>
+      {/* Thumbnail — always visible */}
+      <div
+        className="overflow-hidden aspect-[3/4] cursor-pointer relative"
+        onClick={() => (isOpen ? onClose() : onOpen())}
+      >
         <img
           src={menuImg}
           alt={title}
@@ -105,130 +120,290 @@ function ExpandableMenuCard({
             className="flex items-center gap-1 text-xs tracking-widest uppercase px-3 py-1"
             style={{ color: "#c9922a", fontFamily: "'Cormorant Garamond', serif" }}
           >
-            <ChevronDown size={14} /> View Cocktail
+            {isOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+            {isOpen ? "Fold" : "View"}
           </span>
         </div>
       </div>
-      <div className="p-4">
+      <div className="p-4 flex items-center justify-between">
         <p
           className="text-sm tracking-widest uppercase"
           style={{ fontFamily: "'Cormorant Garamond', serif", color: "#c9922a" }}
         >
           {title}
         </p>
+        {isOpen && (
+          <button
+            onClick={onClose}
+            className="flex items-center gap-1 text-xs tracking-widest uppercase transition-opacity hover:opacity-70"
+            style={{ color: "#c9922a", fontFamily: "'Cormorant Garamond', serif" }}
+          >
+            <ChevronUp size={12} /> Fold
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ── Expanded detail panel (rendered full-width below the active row) ─────────
+function MenuCardExpanded({
+  title,
+  cocktailImg,
+  cocktailLabel,
+  description,
+  story,
+  ingredients,
+  onClose,
+}: {
+  title: string;
+  cocktailImg: string;
+  cocktailLabel: string;
+  description: string;
+  story: string;
+  ingredients: string[];
+  onClose: () => void;
+}) {
+  return (
+    <div
+      className="col-span-2 md:col-span-3 lg:col-span-4 overflow-hidden"
+      style={{
+        background: "oklch(0.11 0.018 50)",
+        border: "1px solid rgba(201,146,42,0.22)",
+        boxShadow: "0 20px 60px rgba(0,0,0,0.6)",
+        animation: "expandDown 0.35s ease forwards",
+      }}
+    >
+      <style>{`
+        @keyframes expandDown {
+          from { opacity: 0; transform: translateY(-12px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
+
+      {/* Header bar with fold button */}
+      <div
+        className="flex items-center justify-between px-8 py-4"
+        style={{ borderBottom: "1px solid rgba(201,146,42,0.15)" }}
+      >
+        <p
+          className="text-xs tracking-[0.3em] uppercase"
+          style={{ fontFamily: "'Cormorant Garamond', serif", color: "#c9922a" }}
+        >
+          {title}
+        </p>
+        <button
+          onClick={onClose}
+          className="flex items-center gap-2 text-xs tracking-widest uppercase px-4 py-2 transition-all hover:opacity-80"
+          style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            color: "#e8d5a3",
+            background: "rgba(201,146,42,0.12)",
+            border: "1px solid rgba(201,146,42,0.35)",
+          }}
+        >
+          <ChevronUp size={14} /> Fold Section
+        </button>
       </div>
 
-      {/* Lightbox overlay */}
-      {open && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto"
-          style={{ background: "rgba(10,8,6,0.94)" }}
-          onClick={() => setOpen(false)}
-        >
-          <div
-            className="relative w-full my-auto"
-            style={{ maxWidth: "860px" }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Close button */}
-            <button
-              onClick={() => setOpen(false)}
-              className="absolute -top-10 right-0 flex items-center gap-1 text-xs tracking-widest uppercase transition-opacity hover:opacity-70"
-              style={{ color: "#c9922a", fontFamily: "'Cormorant Garamond', serif" }}
-            >
-              <X size={14} /> Close
-            </button>
+      {/* Main content: photo + text side by side */}
+      <div className="grid md:grid-cols-2 gap-0">
+        {/* Large photo */}
+        <div className="overflow-hidden" style={{ maxHeight: "560px" }}>
+          <img
+            src={cocktailImg}
+            alt={cocktailLabel}
+            className="w-full h-full object-cover"
+            style={{ minHeight: "400px", maxHeight: "560px" }}
+          />
+        </div>
 
-            {/* Two-column layout: photo left, content right */}
-            <div
-              className="grid md:grid-cols-2 overflow-hidden"
+        {/* Text content */}
+        <div className="p-10 flex flex-col justify-between" style={{ overflowY: "auto", maxHeight: "560px" }}>
+          <div>
+            <h3
+              className="text-3xl md:text-4xl leading-tight mb-5"
+              style={{ fontFamily: "'Playfair Display', serif", color: "#f5efe6" }}
+            >
+              {cocktailLabel}
+            </h3>
+            <hr style={{ borderColor: "rgba(201,146,42,0.35)", marginBottom: "1.5rem" }} />
+            <p
+              className="text-base leading-relaxed mb-5"
+              style={{ color: "oklch(0.74 0.015 65)", fontFamily: "'DM Sans', sans-serif" }}
+            >
+              {description}
+            </p>
+            <p
+              className="text-sm leading-relaxed mb-8 italic"
               style={{
-                boxShadow: "0 30px 80px rgba(0,0,0,0.8)",
-                background: "oklch(0.12 0.018 50)",
-                border: "1px solid rgba(201,146,42,0.18)",
+                color: "oklch(0.60 0.015 65)",
+                fontFamily: "'DM Sans', sans-serif",
+                borderLeft: "2px solid rgba(201,146,42,0.45)",
+                paddingLeft: "1rem",
               }}
             >
-              {/* Photo */}
-              <div className="overflow-hidden">
-                <img
-                  src={cocktailImg}
-                  alt={cocktailLabel}
-                  className="w-full h-full object-cover"
-                  style={{ minHeight: "320px", maxHeight: "520px" }}
-                />
-              </div>
-
-              {/* Content */}
-              <div className="p-8 flex flex-col justify-between">
-                <div>
-                  {/* Label */}
-                  <p
-                    className="text-xs tracking-[0.3em] uppercase mb-3"
-                    style={{ fontFamily: "'Cormorant Garamond', serif", color: "#c9922a" }}
+              {story}
+            </p>
+            <div>
+              <p
+                className="text-xs tracking-widest uppercase mb-3"
+                style={{ fontFamily: "'Cormorant Garamond', serif", color: "#c9922a" }}
+              >
+                Key Ingredients
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {ingredients.map((ing) => (
+                  <span
+                    key={ing}
+                    className="text-xs px-3 py-1"
+                    style={{
+                      fontFamily: "'DM Sans', sans-serif",
+                      color: "#e8d5a3",
+                      background: "rgba(201,146,42,0.1)",
+                      border: "1px solid rgba(201,146,42,0.28)",
+                    }}
                   >
-                    {title}
-                  </p>
-                  {/* Cocktail name */}
-                  <h3
-                    className="text-2xl md:text-3xl leading-tight mb-4"
-                    style={{ fontFamily: "'Playfair Display', serif", color: "#f5efe6" }}
-                  >
-                    {cocktailLabel}
-                  </h3>
-                  {/* Gold rule */}
-                  <hr style={{ borderColor: "rgba(201,146,42,0.35)", marginBottom: "1.25rem" }} />
-                  {/* Description */}
-                  <p
-                    className="text-sm leading-relaxed mb-4"
-                    style={{ color: "oklch(0.72 0.015 65)", fontFamily: "'DM Sans', sans-serif" }}
-                  >
-                    {description}
-                  </p>
-                  {/* Story */}
-                  <p
-                    className="text-sm leading-relaxed mb-6 italic"
-                    style={{ color: "oklch(0.58 0.015 65)", fontFamily: "'DM Sans', sans-serif", borderLeft: "2px solid rgba(201,146,42,0.4)", paddingLeft: "0.875rem" }}
-                  >
-                    {story}
-                  </p>
-                  {/* Ingredients */}
-                  <div>
-                    <p
-                      className="text-xs tracking-widest uppercase mb-2"
-                      style={{ fontFamily: "'Cormorant Garamond', serif", color: "#c9922a" }}
-                    >
-                      Key Ingredients
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {ingredients.map((ing) => (
-                        <span
-                          key={ing}
-                          className="text-xs px-2 py-1"
-                          style={{
-                            fontFamily: "'DM Sans', sans-serif",
-                            color: "#e8d5a3",
-                            background: "rgba(201,146,42,0.1)",
-                            border: "1px solid rgba(201,146,42,0.25)",
-                          }}
-                        >
-                          {ing}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-                {/* Footer note */}
-                <p
-                  className="mt-6 text-xs tracking-wider"
-                  style={{ color: "oklch(0.42 0.012 65)", fontFamily: "'DM Sans', sans-serif" }}
-                >
-                  Arkle Bar &amp; Restaurant · Glenroyal Hotel, Maynooth
-                </p>
+                    {ing}
+                  </span>
+                ))}
               </div>
             </div>
           </div>
+          <p
+            className="mt-8 text-xs tracking-wider"
+            style={{ color: "oklch(0.40 0.012 65)", fontFamily: "'DM Sans', sans-serif" }}
+          >
+            Arkle Bar &amp; Restaurant · Glenroyal Hotel, Maynooth
+          </p>
         </div>
-      )}
+      </div>
+    </div>
+  );
+}
+
+// ── Menu grid with inline expansion ──────────────────────────────────
+const MENU_CARDS = [
+  {
+    title: "Cocktails Menu",
+    menuImg: PHOTOS.cocktailMenu,
+    cocktailImg: PHOTOS.raspberryShoda,
+    cocktailLabel: "Raspberry Shoda",
+    description: "The Raspberry Shoda is a visually stunning sour-style cocktail built on Absolut Raspberry Vodka and Limoncello, brightened with fresh lemon juice and balanced with simple syrup. Its crowning glory is a thick, velvety raspberry foam that delivers an intense burst of flavour before the drink even touches your lips.",
+    story: "I created the Raspberry Shoda to give guests something they had never experienced before — a cocktail that surprises at every stage. The name comes from the Irish word for silk, a promise of the texture waiting beneath the foam. It quickly became the best-selling cocktail on the Arkle menu and the drink guests would return specifically to order again.",
+    ingredients: ["Absolut Raspberry Vodka", "Limoncello", "Raspberry Purée", "Lemon Juice", "Simple Syrup", "Raspberry Foam"],
+  },
+  {
+    title: "Negronis",
+    menuImg: PHOTOS.negroniMenu,
+    cocktailImg: PHOTOS.raulAtWork,
+    cocktailLabel: "Negroni Selection — Arkle Bar",
+    description: "A curated trio of Negroni expressions, each exploring a different dimension of the classic bitter-sweet template. From the bold and traditional Classic Negroni to the citrus-forward Yuzu Negroni and the rich Coffee Bean Negroni, this section was designed to convert both Negroni devotees and curious newcomers.",
+    story: "I wanted to show guests that the Negroni is not a single drink but a philosophy. By pairing Irish and international gins with unexpected infusions — yuzu, cold brew coffee — I gave the Arkle Negroni menu a personality entirely its own, rooted in Irish craft spirits like Drumshanbo Gunpowder and Glendalough.",
+    ingredients: ["Drumshanbo Gunpowder Gin", "Campari", "Valentia Island Vermouth", "Yuzu", "Cold Brew Coffee", "Orange"],
+  },
+  {
+    title: "After Dinner",
+    menuImg: PHOTOS.afterDinnerMenu,
+    cocktailImg: PHOTOS.raspberryShodaRow,
+    cocktailLabel: "After Dinner Cocktails — Arkle Bar",
+    description: "A selection of indulgent, spirit-forward cocktails designed to complement the end of a fine dining experience. The Irish Toffee wraps Jameson whiskey in butterscotch and cream, the Boulevardier adds dark chocolate depth, and the Arkle Espresso Martini delivers a rich, caffeinated finish.",
+    story: "After-dinner cocktails are about comfort and conversation. I designed this menu to feel like a natural extension of the meal — warming, indulgent, and unhurried. Each drink was crafted to linger, giving guests a reason to stay at the table just a little longer.",
+    ingredients: ["Jameson Whiskey", "Butterscotch Liqueur", "Bulleit Bourbon", "Campari", "Absolut Vodka", "Baileys", "Kahlua", "Espresso"],
+  },
+  {
+    title: "Irish Forward",
+    menuImg: PHOTOS.irishForwardMenu,
+    cocktailImg: PHOTOS.raulAtWork,
+    cocktailLabel: "Irish Forward — Celebrating Irish Spirits",
+    description: "A proudly Irish cocktail section celebrating the extraordinary range of craft spirits produced on the island. From the floral Oileán with Drumshanbo Gunpowder Gin and elderflower, to the herbal Gairdin with Dingle Gin and blackcurrant, to the smooth and complex Uisce Beatha built on Jameson and homemade bitters.",
+    story: "Working in Ireland gave me a deep appreciation for the renaissance of Irish craft distilling. This menu was my tribute to that movement — a way of telling guests that world-class cocktail ingredients were being made right here on their doorstep. Every drink in this section tells a story of Irish landscape and craft.",
+    ingredients: ["Drumshanbo Gunpowder Gin", "Dingle Gin", "Jameson Whiskey", "Irish Mist", "Elderflower Syrup", "Beara Bitters", "Poachers Tonic"],
+  },
+  {
+    title: "Martinis",
+    menuImg: PHOTOS.martinisMenu,
+    cocktailImg: PHOTOS.raspberryShoda,
+    cocktailLabel: "Martini Selection — Arkle Bar",
+    description: "Three distinct Martini expressions covering the full spectrum from bone-dry to sweet and fruity. The Classic Martini with Drumshanbo Gunpowder Gin is clean and precise; the Lavender Lemon Drop is refreshing and aromatic; and the French Martini brings a sweet, raspberry-kissed finish that pairs beautifully with the Arkle dining experience.",
+    story: "The Martini is the most unforgiving cocktail — there is nowhere to hide. I wanted this menu to demonstrate technical precision while still offering something for every palate. The Lavender Lemon Drop became a particular favourite with guests who thought they did not like Martinis, which is exactly the kind of conversion I love to achieve.",
+    ingredients: ["Drumshanbo Gunpowder Gin", "Absolut Citron Vodka", "Absolut Vodka", "Lavender Syrup", "Chambord", "Dry Vermouth", "Pineapple Juice"],
+  },
+  {
+    title: "Sours",
+    menuImg: PHOTOS.soursMenu,
+    cocktailImg: PHOTOS.raspberryShodaRow,
+    cocktailLabel: "Sours — Whiskey, Pisco & Amaretto",
+    description: "A trio of expertly balanced sours showcasing three very different base spirits. The Whiskey Sour uses Jameson Black Barrel for a rich, oaky backbone; the Pisco Sour is velvety and tangy with Beara bitters; and the Amaretto Sour brings nutty sweetness softened by egg white and citrus.",
+    story: "Sours are the cocktail that teaches you the most about balance. Getting the ratio of spirit, citrus, and sweetness exactly right — and then deciding whether to use egg white, how to dry-shake, how long to wet-shake — is a craft in itself. This menu was a masterclass in that balance, and it consistently drew compliments from guests who appreciated the precision.",
+    ingredients: ["Jameson Black Barrel", "Pisco", "Disaronno Amaretto", "Lemon Juice", "Lime Juice", "Egg White", "Beara Bitters", "Simple Syrup"],
+  },
+  {
+    title: "Long Drinks",
+    menuImg: PHOTOS.longMenu,
+    cocktailImg: PHOTOS.blackForestSpecial,
+    cocktailLabel: "Long Drinks — Miso Colada, Highball 75 & more",
+    description: "Three long, refreshing cocktails designed for leisurely enjoyment. The Miso Colada is a creamy, tropical twist with a savoury depth from miso paste. The Highball 75 is fresh and bubbly with Beefeater 24 gin and prosecco. The Paloma Blanca is zesty and light, built on Patron Silver tequila with grapefruit and sea salt.",
+    story: "Long drinks are about atmosphere — they are the cocktails people order when they want to relax and let the evening unfold. The Miso Colada was the most talked-about drink on this menu; the idea of adding miso to a Piña Colada sounds unusual until you taste it, and then it makes complete sense. It became a signature conversation starter at the bar.",
+    ingredients: ["Havana 3yr Rum", "Beefeater 24 Gin", "Patron Silver Tequila", "Coconut Cream", "Miso Paste", "Prosecco", "Grapefruit Juice", "Agave Nectar"],
+  },
+  {
+    title: "Smoked",
+    menuImg: PHOTOS.smokedMenu,
+    cocktailImg: PHOTOS.raulAtWork,
+    cocktailLabel: "Smoked Cocktails — Old Fashioned, Mezcal Negroni & more",
+    description: "A premium smoked cocktail menu priced at €15, featuring three spirit-forward classics elevated with smoke and complexity. The Old Fashioned uses Maker's Mark bourbon with smoked and Beara bitters. The Mezcal Negroni brings earthy, aromatic depth from Casamigos mezcal. The Godfather pairs Glenfiddich 12yr scotch with amaretto for a nutty, peaty finish.",
+    story: "Smoked cocktails are theatre as much as they are flavour. I introduced this menu to give guests an experience they could not get anywhere else in Maynooth — the ritual of the smoke, the aroma, the anticipation before the first sip. These are cocktails for people who want to be transported somewhere else entirely, and they consistently became the most photographed drinks on the menu.",
+    ingredients: ["Maker's Mark Bourbon", "Casamigos Mezcal", "Glenfiddich 12yr Scotch", "Campari", "Amaretto", "Smoked Bitters", "Beara Bitters", "Cinnamon"],
+  },
+];
+
+// Renders the 4-column grid with an inline expanded panel below the active card's row
+function MenuGrid() {
+  const [activeIdx, setActiveIdx] = useState<number | null>(null);
+  const COLS = 4; // matches lg:grid-cols-4
+
+  // Build rows: each row is an array of card indices
+  const rows: number[][] = [];
+  for (let i = 0; i < MENU_CARDS.length; i += COLS) {
+    rows.push(MENU_CARDS.slice(i, i + COLS).map((_, j) => i + j));
+  }
+
+  return (
+    <div className="flex flex-col gap-4">
+      {rows.map((rowIndices, rowIdx) => {
+        const activeInRow = activeIdx !== null && rowIndices.includes(activeIdx);
+        const activeCard = activeIdx !== null ? MENU_CARDS[activeIdx] : null;
+        return (
+          <div key={rowIdx}>
+            {/* Card row */}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {rowIndices.map((cardIdx, i) => {
+                const card = MENU_CARDS[cardIdx];
+                return (
+                  <ExpandableMenuCard
+                    key={card.title}
+                    {...card}
+                    isOpen={activeIdx === cardIdx}
+                    onOpen={() => setActiveIdx(cardIdx)}
+                    onClose={() => setActiveIdx(null)}
+                    delay={i * 80}
+                  />
+                );
+              })}
+            </div>
+            {/* Inline expanded panel — shown below this row when a card in it is active */}
+            {activeInRow && activeCard && (
+              <div className="mt-4">
+                <MenuCardExpanded
+                  {...activeCard}
+                  onClose={() => setActiveIdx(null)}
+                />
+              </div>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -798,88 +973,7 @@ export default function Home() {
                 martinis, smoked cocktails, and more.
               </p>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              <ExpandableMenuCard
-                title="Cocktails Menu"
-                menuImg={PHOTOS.cocktailMenu}
-                cocktailImg={PHOTOS.raspberryShoda}
-                cocktailLabel="Raspberry Shoda"
-                description="The Raspberry Shoda is a visually stunning sour-style cocktail built on Absolut Raspberry Vodka and Limoncello, brightened with fresh lemon juice and balanced with simple syrup. Its crowning glory is a thick, velvety raspberry foam that delivers an intense burst of flavour before the drink even touches your lips."
-                story="I created the Raspberry Shoda to give guests something they had never experienced before — a cocktail that surprises at every stage. The name comes from the Irish word for silk, a promise of the texture waiting beneath the foam. It quickly became the best-selling cocktail on the Arkle menu and the drink guests would return specifically to order again."
-                ingredients={["Absolut Raspberry Vodka", "Limoncello", "Raspberry Purée", "Lemon Juice", "Simple Syrup", "Raspberry Foam"]}
-                delay={0}
-              />
-              <ExpandableMenuCard
-                title="Negronis"
-                menuImg={PHOTOS.negroniMenu}
-                cocktailImg={PHOTOS.raulAtWork}
-                cocktailLabel="Negroni Selection — Arkle Bar"
-                description="A curated trio of Negroni expressions, each exploring a different dimension of the classic bitter-sweet template. From the bold and traditional Classic Negroni to the citrus-forward Yuzu Negroni and the rich Coffee Bean Negroni, this section was designed to convert both Negroni devotees and curious newcomers."
-                story="I wanted to show guests that the Negroni is not a single drink but a philosophy. By pairing Irish and international gins with unexpected infusions — yuzu, cold brew coffee — I gave the Arkle Negroni menu a personality entirely its own, rooted in Irish craft spirits like Drumshanbo Gunpowder and Glendalough."
-                ingredients={["Drumshanbo Gunpowder Gin", "Campari", "Valentia Island Vermouth", "Yuzu", "Cold Brew Coffee", "Orange"]}
-                delay={80}
-              />
-              <ExpandableMenuCard
-                title="After Dinner"
-                menuImg={PHOTOS.afterDinnerMenu}
-                cocktailImg={PHOTOS.raspberryShodaRow}
-                cocktailLabel="After Dinner Cocktails — Arkle Bar"
-                description="A selection of indulgent, spirit-forward cocktails designed to complement the end of a fine dining experience. The Irish Toffee wraps Jameson whiskey in butterscotch and cream, the Boulevardier adds dark chocolate depth, and the Arkle Espresso Martini delivers a rich, caffeinated finish."
-                story="After-dinner cocktails are about comfort and conversation. I designed this menu to feel like a natural extension of the meal — warming, indulgent, and unhurried. Each drink was crafted to linger, giving guests a reason to stay at the table just a little longer."
-                ingredients={["Jameson Whiskey", "Butterscotch Liqueur", "Bulleit Bourbon", "Campari", "Absolut Vodka", "Baileys", "Kahlua", "Espresso"]}
-                delay={160}
-              />
-              <ExpandableMenuCard
-                title="Irish Forward"
-                menuImg={PHOTOS.irishForwardMenu}
-                cocktailImg={PHOTOS.raulAtWork}
-                cocktailLabel="Irish Forward — Celebrating Irish Spirits"
-                description="A proudly Irish cocktail section celebrating the extraordinary range of craft spirits produced on the island. From the floral Oileán with Drumshanbo Gunpowder Gin and elderflower, to the herbal Gairdin with Dingle Gin and blackcurrant, to the smooth and complex Uisce Beatha built on Jameson and homemade bitters."
-                story="Working in Ireland gave me a deep appreciation for the renaissance of Irish craft distilling. This menu was my tribute to that movement — a way of telling guests that world-class cocktail ingredients were being made right here on their doorstep. Every drink in this section tells a story of Irish landscape and craft."
-                ingredients={["Drumshanbo Gunpowder Gin", "Dingle Gin", "Jameson Whiskey", "Irish Mist", "Elderflower Syrup", "Beara Bitters", "Poachers Tonic"]}
-                delay={240}
-              />
-              <ExpandableMenuCard
-                title="Martinis"
-                menuImg={PHOTOS.martinisMenu}
-                cocktailImg={PHOTOS.raspberryShoda}
-                cocktailLabel="Martini Selection — Arkle Bar"
-                description="Three distinct Martini expressions covering the full spectrum from bone-dry to sweet and fruity. The Classic Martini with Drumshanbo Gunpowder Gin is clean and precise; the Lavender Lemon Drop is refreshing and aromatic; and the French Martini brings a sweet, raspberry-kissed finish that pairs beautifully with the Arkle dining experience."
-                story="The Martini is the most unforgiving cocktail — there is nowhere to hide. I wanted this menu to demonstrate technical precision while still offering something for every palate. The Lavender Lemon Drop became a particular favourite with guests who thought they did not like Martinis, which is exactly the kind of conversion I love to achieve."
-                ingredients={["Drumshanbo Gunpowder Gin", "Absolut Citron Vodka", "Absolut Vodka", "Lavender Syrup", "Chambord", "Dry Vermouth", "Pineapple Juice"]}
-                delay={0}
-              />
-              <ExpandableMenuCard
-                title="Sours"
-                menuImg={PHOTOS.soursMenu}
-                cocktailImg={PHOTOS.raspberryShodaRow}
-                cocktailLabel="Sours — Whiskey, Pisco & Amaretto"
-                description="A trio of expertly balanced sours showcasing three very different base spirits. The Whiskey Sour uses Jameson Black Barrel for a rich, oaky backbone; the Pisco Sour is velvety and tangy with Beara bitters; and the Amaretto Sour brings nutty sweetness softened by egg white and citrus."
-                story="Sours are the cocktail that teaches you the most about balance. Getting the ratio of spirit, citrus, and sweetness exactly right — and then deciding whether to use egg white, how to dry-shake, how long to wet-shake — is a craft in itself. This menu was a masterclass in that balance, and it consistently drew compliments from guests who appreciated the precision."
-                ingredients={["Jameson Black Barrel", "Pisco", "Disaronno Amaretto", "Lemon Juice", "Lime Juice", "Egg White", "Beara Bitters", "Simple Syrup"]}
-                delay={80}
-              />
-              <ExpandableMenuCard
-                title="Long Drinks"
-                menuImg={PHOTOS.longMenu}
-                cocktailImg={PHOTOS.blackForestSpecial}
-                cocktailLabel="Long Drinks — Miso Colada, Highball 75 & more"
-                description="Three long, refreshing cocktails designed for leisurely enjoyment. The Miso Colada is a creamy, tropical twist with a savoury depth from miso paste. The Highball 75 is fresh and bubbly with Beefeater 24 gin and prosecco. The Paloma Blanca is zesty and light, built on Patron Silver tequila with grapefruit and sea salt."
-                story="Long drinks are about atmosphere — they are the cocktails people order when they want to relax and let the evening unfold. The Miso Colada was the most talked-about drink on this menu; the idea of adding miso to a Piña Colada sounds unusual until you taste it, and then it makes complete sense. It became a signature conversation starter at the bar."
-                ingredients={["Havana 3yr Rum", "Beefeater 24 Gin", "Patron Silver Tequila", "Coconut Cream", "Miso Paste", "Prosecco", "Grapefruit Juice", "Agave Nectar"]}
-                delay={160}
-              />
-              <ExpandableMenuCard
-                title="Smoked"
-                menuImg={PHOTOS.smokedMenu}
-                cocktailImg={PHOTOS.raulAtWork}
-                cocktailLabel="Smoked Cocktails — Old Fashioned, Mezcal Negroni & more"
-                description="A premium smoked cocktail menu priced at €15, featuring three spirit-forward classics elevated with smoke and complexity. The Old Fashioned uses Maker's Mark bourbon with smoked and Beara bitters. The Mezcal Negroni brings earthy, aromatic depth from Casamigos mezcal. The Godfather pairs Glenfiddich 12yr scotch with amaretto for a nutty, peaty finish."
-                story="Smoked cocktails are theatre as much as they are flavour. I introduced this menu to give guests an experience they could not get anywhere else in Maynooth — the ritual of the smoke, the aroma, the anticipation before the first sip. These are cocktails for people who want to be transported somewhere else entirely, and they consistently became the most photographed drinks on the menu."
-                ingredients={["Maker's Mark Bourbon", "Casamigos Mezcal", "Glenfiddich 12yr Scotch", "Campari", "Amaretto", "Smoked Bitters", "Beara Bitters", "Cinnamon"]}
-                delay={240}
-              />
-            </div>
+<MenuGrid />
           </div>
         </div>
       </section>
