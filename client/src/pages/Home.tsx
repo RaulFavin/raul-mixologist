@@ -6,7 +6,10 @@
    ============================================================= */
 
 import { useEffect, useRef, useState } from "react";
-import { MapPin, Mail, Linkedin, ChevronDown, Star } from "lucide-react";
+import { MapPin, Mail, Linkedin, ChevronDown, Star, Download } from "lucide-react";
+
+// ── CV CDN URL ───────────────────────────────────────────────────────────────
+const CV_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310519663164379997/gb3kDvRHMNESvyNJMSRSjR/RAULFAVINSANTOSCV_a95fdfa1.docx";
 
 // ── CDN photo URLs ──────────────────────────────────────────────────────────
 const PHOTOS = {
@@ -738,6 +741,21 @@ export default function Home() {
               >
                 <Mail size={16} />
                 Get in Touch
+              </a>
+              <a
+                href={CV_URL}
+                download="Raul_Favin_Santos_CV.docx"
+                className="flex items-center justify-center gap-3 px-8 py-4 text-sm tracking-widest uppercase font-semibold transition-all duration-200 hover:opacity-85"
+                style={{
+                  fontFamily: "'Cormorant Garamond', serif",
+                  border: "1px solid rgba(201,146,42,0.5)",
+                  color: "#e8d5a3",
+                  background: "transparent",
+                  letterSpacing: "0.15em",
+                }}
+              >
+                <Download size={16} />
+                Download CV
               </a>
             </div>
 
