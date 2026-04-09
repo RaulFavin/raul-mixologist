@@ -170,16 +170,9 @@ function MenuCardExpanded({
       style={{
         background: "oklch(0.11 0.018 50)",
         border: "1px solid rgba(201,146,42,0.22)",
-        boxShadow: "0 20px 60px rgba(0,0,0,0.6)",
-        animation: "expandDown 0.35s ease forwards",
+        boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
       }}
     >
-      <style>{`
-        @keyframes expandDown {
-          from { opacity: 0; transform: translateY(-12px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
 
       {/* Header bar with fold button */}
       <div
@@ -206,20 +199,20 @@ function MenuCardExpanded({
         </button>
       </div>
 
-      {/* Main content: photo + text side by side */}
+        {/* Main content: photo + text side by side */}
       <div className="grid md:grid-cols-2 gap-0">
-        {/* Large photo */}
-        <div className="overflow-hidden" style={{ maxHeight: "560px" }}>
+        {/* Photo */}
+        <div className="overflow-hidden" style={{ maxHeight: "380px" }}>
           <img
             src={cocktailImg}
             alt={cocktailLabel}
             className="w-full h-full object-cover"
-            style={{ minHeight: "400px", maxHeight: "560px" }}
+            style={{ minHeight: "280px", maxHeight: "380px" }}
           />
         </div>
 
         {/* Text content */}
-        <div className="p-10 flex flex-col justify-between" style={{ overflowY: "auto", maxHeight: "560px" }}>
+        <div className="p-8 flex flex-col justify-between" style={{ overflowY: "auto", maxHeight: "380px" }}>
           <div>
             <h3
               className="text-3xl md:text-4xl leading-tight mb-5"
@@ -378,11 +371,7 @@ function MenuGrid() {
     }
     setPrevIdx(activeIdx);
     setActiveIdx(idx);
-    // Scroll the panel into view smoothly after the animation starts
-    const rowIdx = Math.floor(idx / COLS);
-    setTimeout(() => {
-      panelRefs.current[rowIdx]?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-    }, 80);
+    // No scrollIntoView — panel expands purely in place
   };
 
   return (
