@@ -202,7 +202,7 @@ function MenuCardExpanded({
             border: "1px solid rgba(201,146,42,0.35)",
           }}
         >
-          <ChevronUp size={14} /> Fold Section
+          <ChevronUp size={14} /> Fold
         </button>
       </div>
 
