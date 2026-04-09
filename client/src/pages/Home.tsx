@@ -358,16 +358,32 @@ const MENU_CARDS = [
   },
 ];
 
-// Renders the 4-column grid with an inline expanded panel below the active card's row
+// Renders the 4-column grid with a smooth inline expansion below the active card's row
 function MenuGrid() {
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
-  const COLS = 4; // matches lg:grid-cols-4
+  const [prevIdx, setPrevIdx] = useState<number | null>(null);
+  const panelRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const COLS = 4;
 
-  // Build rows: each row is an array of card indices
   const rows: number[][] = [];
   for (let i = 0; i < MENU_CARDS.length; i += COLS) {
     rows.push(MENU_CARDS.slice(i, i + COLS).map((_, j) => i + j));
   }
+
+  const handleOpen = (idx: number) => {
+    if (activeIdx === idx) {
+      setActiveIdx(null);
+      setPrevIdx(idx);
+      return;
+    }
+    setPrevIdx(activeIdx);
+    setActiveIdx(idx);
+    // Scroll the panel into view smoothly after the animation starts
+    const rowIdx = Math.floor(idx / COLS);
+    setTimeout(() => {
+      panelRefs.current[rowIdx]?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }, 80);
+  };
 
   return (
     <div className="flex flex-col gap-4">
@@ -385,22 +401,32 @@ function MenuGrid() {
                     key={card.title}
                     {...card}
                     isOpen={activeIdx === cardIdx}
-                    onOpen={() => setActiveIdx(cardIdx)}
-                    onClose={() => setActiveIdx(null)}
+                    onOpen={() => handleOpen(cardIdx)}
+                    onClose={() => handleOpen(cardIdx)}
                     delay={i * 80}
                   />
                 );
               })}
             </div>
-            {/* Inline expanded panel — shown below this row when a card in it is active */}
-            {activeInRow && activeCard && (
-              <div className="mt-4">
-                <MenuCardExpanded
-                  {...activeCard}
-                  onClose={() => setActiveIdx(null)}
-                />
+            {/* Smooth inline expansion panel */}
+            <div
+              ref={(el) => { panelRefs.current[rowIdx] = el; }}
+              style={{
+                display: "grid",
+                gridTemplateRows: activeInRow ? "1fr" : "0fr",
+                transition: "grid-template-rows 0.42s cubic-bezier(0.4,0,0.2,1)",
+                marginTop: activeInRow ? "1rem" : "0",
+              }}
+            >
+              <div style={{ overflow: "hidden" }}>
+                {activeCard && (
+                  <MenuCardExpanded
+                    {...activeCard}
+                    onClose={() => setActiveIdx(null)}
+                  />
+                )}
               </div>
-            )}
+            </div>
           </div>
         );
       })}
