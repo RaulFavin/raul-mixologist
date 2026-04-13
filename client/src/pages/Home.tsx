@@ -351,11 +351,9 @@ const MENU_CARDS = [
   },
 ];
 
-// Renders the 4-column grid with a smooth inline expansion below the active card's row
+// Renders the 4-column grid. Clicking a card opens a fixed viewport modal overlay.
 function MenuGrid() {
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
-  const [prevIdx, setPrevIdx] = useState<number | null>(null);
-  const panelRefs = useRef<(HTMLDivElement | null)[]>([]);
   const COLS = 4;
 
   const rows: number[][] = [];
@@ -363,63 +361,180 @@ function MenuGrid() {
     rows.push(MENU_CARDS.slice(i, i + COLS).map((_, j) => i + j));
   }
 
-  const handleOpen = (idx: number) => {
-    if (activeIdx === idx) {
-      setActiveIdx(null);
-      setPrevIdx(idx);
-      return;
-    }
-    setPrevIdx(activeIdx);
-    setActiveIdx(idx);
-    // No scrollIntoView — panel expands purely in place
-  };
+  const activeCard = activeIdx !== null ? MENU_CARDS[activeIdx] : null;
+
+  // Close on Escape key
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") setActiveIdx(null); };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, []);
+
+  // Prevent body scroll when modal is open
+  useEffect(() => {
+    document.body.style.overflow = activeIdx !== null ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [activeIdx]);
 
   return (
-    <div className="flex flex-col gap-4">
-      {rows.map((rowIndices, rowIdx) => {
-        const activeInRow = activeIdx !== null && rowIndices.includes(activeIdx);
-        const activeCard = activeIdx !== null ? MENU_CARDS[activeIdx] : null;
-        return (
-          <div key={rowIdx}>
-            {/* Card row */}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {rowIndices.map((cardIdx, i) => {
-                const card = MENU_CARDS[cardIdx];
-                return (
-                  <ExpandableMenuCard
-                    key={card.title}
-                    {...card}
-                    isOpen={activeIdx === cardIdx}
-                    onOpen={() => handleOpen(cardIdx)}
-                    onClose={() => handleOpen(cardIdx)}
-                    delay={i * 80}
-                  />
-                );
-              })}
-            </div>
-            {/* Smooth inline expansion panel */}
+    <>
+      {/* Card grid */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {MENU_CARDS.map((card, cardIdx) => (
+          <ExpandableMenuCard
+            key={card.title}
+            {...card}
+            isOpen={activeIdx === cardIdx}
+            onOpen={() => setActiveIdx(cardIdx)}
+            onClose={() => setActiveIdx(null)}
+            delay={(cardIdx % COLS) * 80}
+          />
+        ))}
+      </div>
+
+      {/* Fixed viewport modal overlay */}
+      {activeCard && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 9999,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "1.5rem",
+            background: "rgba(10,8,5,0.82)",
+            backdropFilter: "blur(6px)",
+            animation: "fadeInOverlay 0.25s ease",
+          }}
+          onClick={() => setActiveIdx(null)}
+        >
+          <style>{`
+            @keyframes fadeInOverlay {
+              from { opacity: 0; }
+              to   { opacity: 1; }
+            }
+            @keyframes slideUpModal {
+              from { opacity: 0; transform: translateY(24px) scale(0.97); }
+              to   { opacity: 1; transform: translateY(0) scale(1); }
+            }
+          `}</style>
+          {/* Modal panel — stop click propagation so clicking inside doesn't close */}
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: "oklch(0.11 0.018 50)",
+              border: "1px solid rgba(201,146,42,0.35)",
+              boxShadow: "0 32px 80px rgba(0,0,0,0.75)",
+              width: "100%",
+              maxWidth: "900px",
+              maxHeight: "85vh",
+              overflowY: "auto",
+              animation: "slideUpModal 0.3s cubic-bezier(0.34,1.56,0.64,1)",
+            }}
+          >
+            {/* Header */}
             <div
-              ref={(el) => { panelRefs.current[rowIdx] = el; }}
+              className="flex items-center justify-between px-8 py-4 sticky top-0"
               style={{
-                display: "grid",
-                gridTemplateRows: activeInRow ? "1fr" : "0fr",
-                transition: "grid-template-rows 0.42s cubic-bezier(0.4,0,0.2,1)",
-                marginTop: activeInRow ? "1rem" : "0",
+                borderBottom: "1px solid rgba(201,146,42,0.18)",
+                background: "oklch(0.11 0.018 50)",
+                zIndex: 1,
               }}
             >
-              <div style={{ overflow: "hidden" }}>
-                {activeCard && (
-                  <MenuCardExpanded
-                    {...activeCard}
-                    onClose={() => setActiveIdx(null)}
-                  />
-                )}
+              <p
+                className="text-xs tracking-[0.3em] uppercase"
+                style={{ fontFamily: "'Cormorant Garamond', serif", color: "#c9922a" }}
+              >
+                {activeCard.title}
+              </p>
+              <button
+                onClick={() => setActiveIdx(null)}
+                className="flex items-center gap-2 text-xs tracking-widest uppercase px-4 py-2 transition-all hover:opacity-80"
+                style={{
+                  fontFamily: "'Cormorant Garamond', serif",
+                  color: "#e8d5a3",
+                  background: "rgba(201,146,42,0.12)",
+                  border: "1px solid rgba(201,146,42,0.35)",
+                }}
+              >
+                <X size={14} /> Close
+              </button>
+            </div>
+
+            {/* Content: photo + text */}
+            <div className="grid md:grid-cols-2 gap-0">
+              <div className="overflow-hidden" style={{ maxHeight: "480px" }}>
+                <img
+                  src={activeCard.cocktailImg}
+                  alt={activeCard.cocktailLabel}
+                  className="w-full h-full object-cover"
+                  style={{ minHeight: "320px", maxHeight: "480px" }}
+                />
+              </div>
+              <div className="p-8 flex flex-col justify-between" style={{ overflowY: "auto", maxHeight: "480px" }}>
+                <div>
+                  <h3
+                    className="text-3xl leading-tight mb-4"
+                    style={{ fontFamily: "'Playfair Display', serif", color: "#f5efe6" }}
+                  >
+                    {activeCard.cocktailLabel}
+                  </h3>
+                  <hr style={{ borderColor: "rgba(201,146,42,0.3)", marginBottom: "1.25rem" }} />
+                  <p
+                    className="text-base leading-relaxed mb-4"
+                    style={{ color: "oklch(0.74 0.015 65)", fontFamily: "'DM Sans', sans-serif" }}
+                  >
+                    {activeCard.description}
+                  </p>
+                  <p
+                    className="text-sm leading-relaxed mb-6 italic"
+                    style={{
+                      color: "oklch(0.60 0.015 65)",
+                      fontFamily: "'DM Sans', sans-serif",
+                      borderLeft: "2px solid rgba(201,146,42,0.45)",
+                      paddingLeft: "1rem",
+                    }}
+                  >
+                    {activeCard.story}
+                  </p>
+                  <div>
+                    <p
+                      className="text-xs tracking-widest uppercase mb-3"
+                      style={{ fontFamily: "'Cormorant Garamond', serif", color: "#c9922a" }}
+                    >
+                      Key Ingredients
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {activeCard.ingredients.map((ing) => (
+                        <span
+                          key={ing}
+                          className="text-xs px-3 py-1"
+                          style={{
+                            fontFamily: "'DM Sans', sans-serif",
+                            color: "#e8d5a3",
+                            background: "rgba(201,146,42,0.1)",
+                            border: "1px solid rgba(201,146,42,0.28)",
+                          }}
+                        >
+                          {ing}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <p
+                  className="mt-6 text-xs tracking-wider"
+                  style={{ color: "oklch(0.40 0.012 65)", fontFamily: "'DM Sans', sans-serif" }}
+                >
+                  Arkle Bar &amp; Restaurant · Glenroyal Hotel, Maynooth
+                </p>
               </div>
             </div>
           </div>
-        );
-      })}
-    </div>
+        </div>
+      )}
+    </>
   );
 }
 
