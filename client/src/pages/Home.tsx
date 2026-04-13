@@ -370,11 +370,7 @@ function MenuGrid() {
     return () => window.removeEventListener("keydown", handler);
   }, []);
 
-  // Prevent body scroll when modal is open
-  useEffect(() => {
-    document.body.style.overflow = activeIdx !== null ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
-  }, [activeIdx]);
+  // Body scroll intentionally NOT locked — user can scroll the page behind the modal
 
   return (
     <>
