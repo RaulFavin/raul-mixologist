@@ -1019,7 +1019,7 @@ export default function Home() {
                   />
                   <SeasonalItem
                     season="St. Patrick's Day"
-                    description="Irish-forward cocktails celebrating local spirits and heritage — Jameson, Dingle Gin, and homemade Irish bitters took centre stage."
+                    description="Irish-forward cocktails celebrating local spirits and heritage"
                   />
                   <SeasonalItem
                     season="Halloween"
@@ -1083,9 +1083,7 @@ export default function Home() {
                 className="mt-4 text-sm max-w-xl mx-auto leading-relaxed"
                 style={{ color: "oklch(0.55 0.015 65)", fontFamily: "'DM Sans', sans-serif" }}
               >
-                A curated selection of menus developed and maintained during my tenure as
-                Head Mixologist — spanning classics, Irish-forward creations, sours,
-                martinis, smoked cocktails, and more.
+               A selection of menus developed and maintained during my tenure as Head Mixologist — spanning classics, Irish-forward creations, sours, martinis, smoked cocktails, and more.
               </p>
             </div>
 <MenuGrid />
