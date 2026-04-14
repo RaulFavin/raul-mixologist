@@ -896,16 +896,16 @@ export default function Home() {
 
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               {/* Photos */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col gap-4">
                 <div
-                  className="col-span-2 overflow-hidden"
+                  className="overflow-hidden"
                   style={{ boxShadow: "0 20px 60px rgba(0,0,0,0.5)" }}
                 >
                   <img
                     src={PHOTOS.raspberryShoda}
                     alt="Raspberry Shoda — single glass"
                     className="w-full object-cover"
-                    style={{ height: '500px', objectPosition: "center top" }}
+                    style={{ height: '520px', objectPosition: "center top" }}
                   />
                 </div>
                 <div
@@ -916,18 +916,7 @@ export default function Home() {
                     src={PHOTOS.raspberryShodaRow}
                     alt="Six Raspberry Shoda cocktails lined up"
                     className="w-full object-cover"
-                    style={{ height: "200px", objectPosition: "center" }}
-                  />
-                </div>
-                <div
-                  className="overflow-hidden"
-                  style={{ boxShadow: "0 20px 60px rgba(0,0,0,0.5)" }}
-                >
-                  <img
-                    src={PHOTOS.cocktailMenu}
-                    alt="Arkle cocktail menu featuring Raspberry Shoda"
-                    className="w-full object-cover"
-                    style={{ height: '380px', objectPosition: "center top" }}
+                    style={{ height: "280px", objectPosition: "center 30%" }}
                   />
                 </div>
               </div>
