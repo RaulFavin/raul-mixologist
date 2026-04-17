@@ -1138,7 +1138,7 @@ export default function Home() {
               If you are looking for someone who brings creativity, precision, and a proven
               track record of creating cocktails that guests keep coming back for — let's talk.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center flex-wrap">
               <a
                 href="https://www.linkedin.com/in/raul-favin"
                 target="_blank"
