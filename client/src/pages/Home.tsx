@@ -1238,6 +1238,138 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── CAREER TIMELINE ────────────────────────────────────────────────────── */}
+      <section
+        className="py-16 md:py-24"
+        style={{ background: "oklch(0.09 0.015 50)" }}
+      >
+        <div className="container">
+          <div className="max-w-4xl mx-auto">
+            <SectionLabel>Professional Journey</SectionLabel>
+            <h2
+              className="text-4xl md:text-5xl leading-tight mb-12"
+              style={{ fontFamily: "'Playfair Display', serif", color: "#f5efe6" }}
+            >
+              Career Timeline
+            </h2>
+            <GoldRule className="mb-12" />
+
+            {/* Timeline items */}
+            <div className="space-y-10">
+              {/* Glenroyal */}
+              <div className="flex gap-6 pb-8 border-b border-amber-900/20">
+                <div className="flex-shrink-0 w-24">
+                  <p style={{ fontFamily: "'Cormorant Garamond', serif", color: "#c9922a", fontSize: "14px" }} className="font-semibold">Feb 2024 – Present</p>
+                </div>
+                <div>
+                  <h3 style={{ fontFamily: "'Playfair Display', serif", color: "#f5efe6" }} className="text-xl mb-2">Head Mixologist / Bar Supervisor</h3>
+                  <p style={{ color: "#c9922a", fontFamily: "'Cormorant Garamond', serif" }} className="text-sm mb-3">Glenroyal Hotel – Maynooth, Ireland</p>
+                  <p style={{ color: "oklch(0.68 0.015 65)", fontFamily: "'DM Sans', sans-serif" }} className="text-sm leading-relaxed">Responsible for cocktail creation and preparation, including signature recipes. Bar service management, wine, beer, and barista training. Cash handling, inventory control, and staff training.</p>
+                </div>
+              </div>
+
+              {/* Fitzpatrick */}
+              <div className="flex gap-6 pb-8 border-b border-amber-900/20">
+                <div className="flex-shrink-0 w-24">
+                  <p style={{ fontFamily: "'Cormorant Garamond', serif", color: "#c9922a", fontSize: "14px" }} className="font-semibold">Apr 2024 – Oct 2024</p>
+                </div>
+                <div>
+                  <h3 style={{ fontFamily: "'Playfair Display', serif", color: "#f5efe6" }} className="text-xl mb-2">Bartender / Waiter</h3>
+                  <p style={{ color: "#c9922a", fontFamily: "'Cormorant Garamond', serif" }} className="text-sm mb-3">Fitzpatrick Castle Hotel – Dublin, Ireland</p>
+                  <p style={{ color: "oklch(0.68 0.015 65)", fontFamily: "'DM Sans', sans-serif" }} className="text-sm leading-relaxed">Professional table and bar service in high-demand hotel environment. Guest reception, food and beverage service, mise en place, and payment management.</p>
+                </div>
+              </div>
+
+              {/* Bistrô Pimenta Rosa */}
+              <div className="flex gap-6 pb-8 border-b border-amber-900/20">
+                <div className="flex-shrink-0 w-24">
+                  <p style={{ fontFamily: "'Cormorant Garamond', serif", color: "#c9922a", fontSize: "14px" }} className="font-semibold">Oct 2020 – Dec 2023</p>
+                </div>
+                <div>
+                  <h3 style={{ fontFamily: "'Playfair Display', serif", color: "#f5efe6" }} className="text-xl mb-2">Waiter / Wine Specialist</h3>
+                  <p style={{ color: "#c9922a", fontFamily: "'Cormorant Garamond', serif" }} className="text-sm mb-3">Bistrô Pimenta Rosa – Porto Alegre, Brazil</p>
+                  <p style={{ color: "oklch(0.68 0.015 65)", fontFamily: "'DM Sans', sans-serif" }} className="text-sm leading-relaxed">High-level table service and menu advisory. Specialized in wine pairing and client relationships.</p>
+                </div>
+              </div>
+
+              {/* Hotel Laghetto */}
+              <div className="flex gap-6 pb-8 border-b border-amber-900/20">
+                <div className="flex-shrink-0 w-24">
+                  <p style={{ fontFamily: "'Cormorant Garamond', serif", color: "#c9922a", fontSize: "14px" }} className="font-semibold">Nov 2018 – Apr 2020</p>
+                </div>
+                <div>
+                  <h3 style={{ fontFamily: "'Playfair Display', serif", color: "#f5efe6" }} className="text-xl mb-2">Bar Supervisor / Bartender</h3>
+                  <p style={{ color: "#c9922a", fontFamily: "'Cormorant Garamond', serif" }} className="text-sm mb-3">Hotel Laghetto – Porto Alegre, Brazil</p>
+                  <p style={{ color: "oklch(0.68 0.015 65)", fontFamily: "'DM Sans', sans-serif" }} className="text-sm leading-relaxed">Bar opening and closing management, beverage stock control, and room service requests. Preparation of classic IBA cocktails and silver service at formal weddings and events.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── EDUCATION & CERTIFICATIONS ─────────────────────────────────────────── */}
+      <section
+        className="py-16 md:py-24"
+        style={{ background: "oklch(0.12 0.015 50)" }}
+      >
+        <div className="container">
+          <div className="max-w-4xl mx-auto">
+            <SectionLabel>Professional Development</SectionLabel>
+            <h2
+              className="text-4xl md:text-5xl leading-tight mb-12"
+              style={{ fontFamily: "'Playfair Display', serif", color: "#f5efe6" }}
+            >
+              Education & Certifications
+            </h2>
+            <GoldRule className="mb-12" />
+
+            <div className="grid md:grid-cols-2 gap-8">
+              {/* Education */}
+              <div>
+                <h3 style={{ fontFamily: "'Playfair Display', serif", color: "#c9922a" }} className="text-2xl mb-6">Education</h3>
+                <div className="space-y-6">
+                  <div>
+                    <p style={{ fontFamily: "'Playfair Display', serif", color: "#f5efe6" }} className="font-semibold mb-1">Hotel Management Degree</p>
+                    <p style={{ color: "#c9922a", fontFamily: "'Cormorant Garamond', serif" }} className="text-sm mb-2">Centro Universitário Senac – Porto Alegre</p>
+                    <p style={{ color: "oklch(0.55 0.015 65)", fontFamily: "'DM Sans', sans-serif" }} className="text-xs">Feb 2019 – Dec 2022 | NFQ Level 6 Equivalent</p>
+                    <p style={{ color: "oklch(0.68 0.015 65)", fontFamily: "'DM Sans', sans-serif" }} className="text-sm mt-2">Hotel management, HR, tourism, event organization, and food & beverage service.</p>
+                  </div>
+                  <div>
+                    <p style={{ fontFamily: "'Playfair Display', serif", color: "#f5efe6" }} className="font-semibold mb-1">Professional Waiter Course</p>
+                    <p style={{ color: "#c9922a", fontFamily: "'Cormorant Garamond', serif" }} className="text-sm mb-2">Centro Universitário Senac – Porto Alegre</p>
+                    <p style={{ color: "oklch(0.55 0.015 65)", fontFamily: "'DM Sans', sans-serif" }} className="text-xs">Jul 2018</p>
+                    <p style={{ color: "oklch(0.68 0.015 65)", fontFamily: "'DM Sans', sans-serif" }} className="text-sm mt-2">Customer service, hygiene standards, food presentation, and basic mixology techniques.</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Certifications */}
+              <div>
+                <h3 style={{ fontFamily: "'Playfair Display', serif", color: "#c9922a" }} className="text-2xl mb-6">Certifications</h3>
+                <div className="space-y-4">
+                  <div className="p-4" style={{ background: "rgba(201,146,42,0.08)", border: "1px solid rgba(201,146,42,0.2)" }}>
+                    <p style={{ fontFamily: "'Playfair Display', serif", color: "#f5efe6" }} className="font-semibold mb-1">Advanced Mixology Techniques</p>
+                    <p style={{ color: "#c9922a", fontFamily: "'Cormorant Garamond', serif" }} className="text-xs">Art Flair – Porto Alegre | Aug 2022</p>
+                    <p style={{ color: "oklch(0.68 0.015 65)", fontFamily: "'DM Sans', sans-serif" }} className="text-xs mt-2">Molecular mixology, cocktail theory, and presentation. Recognized for original cocktail creation.</p>
+                  </div>
+                  <div className="p-4" style={{ background: "rgba(201,146,42,0.08)", border: "1px solid rgba(201,146,42,0.2)" }}>
+                    <p style={{ fontFamily: "'Playfair Display', serif", color: "#f5efe6" }} className="font-semibold mb-1">Intensive Bartender Course</p>
+                    <p style={{ color: "#c9922a", fontFamily: "'Cormorant Garamond', serif" }} className="text-xs">Entertainment School – Rio de Janeiro | Jul 2023</p>
+                    <p style={{ color: "oklch(0.68 0.015 65)", fontFamily: "'DM Sans', sans-serif" }} className="text-xs mt-2">Comprehensive bartending, bar operations, and customer service training.</p>
+                  </div>
+                  <div className="p-4" style={{ background: "rgba(201,146,42,0.08)", border: "1px solid rgba(201,146,42,0.2)" }}>
+                    <p style={{ fontFamily: "'Playfair Display', serif", color: "#f5efe6" }} className="font-semibold mb-1">Microsoft Excel Course</p>
+                    <p style={{ color: "#c9922a", fontFamily: "'Cormorant Garamond', serif" }} className="text-xs">Centro Universitário Senac – Porto Alegre | Jul–Aug 2022</p>
+                    <p style={{ color: "oklch(0.68 0.015 65)", fontFamily: "'DM Sans', sans-serif" }} className="text-xs mt-2">Spreadsheet design, data analysis, and formula application.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ── FOOTER ─────────────────────────────────────────────────────────── */}
       <footer
         className="py-10"
