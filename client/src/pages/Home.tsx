@@ -1390,34 +1390,19 @@ export default function Home() {
               {/* Portuguese */}
               <div className="p-6" style={{ background: "rgba(201,146,42,0.08)", border: "1px solid rgba(201,146,42,0.2)" }}>
                 <h3 style={{ fontFamily: "'Playfair Display', serif", color: "#f5efe6" }} className="text-2xl mb-3">Portuguese</h3>
-                <p style={{ color: "#c9922a", fontFamily: "'Cormorant Garamond', serif" }} className="text-sm mb-4 font-semibold">Native Speaker</p>
-                <div className="flex gap-1">
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <div key={i} className="w-2 h-8" style={{ background: "#c9922a", borderRadius: "2px" }} />
-                  ))}
-                </div>
+                <p style={{ color: "#c9922a", fontFamily: "'Cormorant Garamond', serif" }} className="text-sm font-semibold">Native Speaker</p>
               </div>
 
               {/* English */}
               <div className="p-6" style={{ background: "rgba(201,146,42,0.08)", border: "1px solid rgba(201,146,42,0.2)" }}>
                 <h3 style={{ fontFamily: "'Playfair Display', serif", color: "#f5efe6" }} className="text-2xl mb-3">English</h3>
-                <p style={{ color: "#c9922a", fontFamily: "'Cormorant Garamond', serif" }} className="text-sm mb-4 font-semibold">C1 Fluent</p>
-                <div className="flex gap-1">
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <div key={i} className="w-2 h-8" style={{ background: i <= 4 ? "#c9922a" : "rgba(201,146,42,0.3)", borderRadius: "2px" }} />
-                  ))}
-                </div>
+                <p style={{ color: "#c9922a", fontFamily: "'Cormorant Garamond', serif" }} className="text-sm font-semibold">C1 Fluent</p>
               </div>
 
               {/* Spanish */}
               <div className="p-6" style={{ background: "rgba(201,146,42,0.08)", border: "1px solid rgba(201,146,42,0.2)" }}>
                 <h3 style={{ fontFamily: "'Playfair Display', serif", color: "#f5efe6" }} className="text-2xl mb-3">Spanish</h3>
-                <p style={{ color: "#c9922a", fontFamily: "'Cormorant Garamond', serif" }} className="text-sm mb-4 font-semibold">Basic</p>
-                <div className="flex gap-1">
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <div key={i} className="w-2 h-8" style={{ background: i <= 2 ? "#c9922a" : "rgba(201,146,42,0.3)", borderRadius: "2px" }} />
-                  ))}
-                </div>
+                <p style={{ color: "#c9922a", fontFamily: "'Cormorant Garamond', serif" }} className="text-sm font-semibold">Basic</p>
               </div>
             </div>
           </div>
